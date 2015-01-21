@@ -7,31 +7,33 @@ namespace :text do
   desc 'verileri yükle'
   task :load => :environment do
     [
-      # 'dunya',
-      # 'ekonomi',
+      'dunya',
+      'ekonomi',
       'genel',
-      # 'guncel',
-      # 'kultur-sanat',
-      # 'magazin',
-      # 'planet',
-      # 'saglik',
-      # 'siyaset',
-      # 'spor',
-      # 'teknoloji',
-      # 'turkiye',
-      # 'yasam',
+      'guncel',
+      'kultur-sanat',
+      'magazin',
+      'planet',
+      'saglik',
+      'siyaset',
+      'spor',
+      'teknoloji',
+      'turkiye',
+      'yasam',
     ].each do |dir|
-      files = FileList[Rails.root.join('news', dir, '*')]
+      files = FileList[Rails.root.join('tmp', 'news', dir, '*')]
 
       files.each_with_index do |file, index|
         f = File.read(file)
         if n_index = f.index("\n")
           title = f[0..n_index-1].gsub("\n", " ").gsub("\r", " ").squish
+          title = UnicodeUtils.downcase(title)
           content = f[n_index..-1].gsub("\n", " ").gsub("\r", " ").squish
+          content = UnicodeUtils.downcase(content)
         else
           title = nil
-          content= f.gsub("\n", " ").gsub("\r", " ").squish
-          # next
+          content = f.gsub("\n", " ").gsub("\r", " ").squish
+          content = UnicodeUtils.downcase(content)
         end
 
         d = Datum.create(

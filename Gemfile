@@ -32,6 +32,7 @@ gem 'redcarpet'
 gem 'spreadsheet'
 gem 'google_calendar'
 gem 'yubikey', '1.4.1'
+gem 'unicode_utils'
 
 gem 'sdoc', '~> 0.4.0', group: :doc
 
