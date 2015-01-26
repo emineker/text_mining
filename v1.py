@@ -13,36 +13,37 @@ from textblob.blob import TextBlob
 import MySQLdb
 import random
 import re
+import nltk
 
 groups = {
-        'dunya': {
-            'min_id': 1,
-            'max_id': 3724
-        },
+        # 'dunya': {
+        #     'min_id': 1,
+        #     'max_id': 3724
+        # },
         'ekonomi': {
             'min_id': 3725,
             'max_id': 6989,
         },
-        'genel': {
-            'min_id': 6990,
-            'max_id': 13660,
-        },
-        'guncel': {
-            'min_id': 13661,
-            'max_id': 19507,
-        },
+        # 'genel': {
+        #     'min_id': 6990,
+        #     'max_id': 13660,
+        # },
+        # 'guncel': {
+        #     'min_id': 13661,
+        #     'max_id': 19507,
+        # },
         'kultur-sanat': {
             'min_id': 19508,
             'max_id': 20662
         },
-        'magazin': {
-            'min_id': 20663,
-            'max_id': 23454
-        },
-        'planet': {
-            'min_id': 23455,
-            'max_id': 25407
-        },
+        # 'magazin': {
+        #     'min_id': 20663,
+        #     'max_id': 23454
+        # },
+        # 'planet': {
+        #     'min_id': 23455,
+        #     'max_id': 25407
+        # },
         'saglik': {
             'min_id': 25408,
             'max_id': 26790
@@ -82,7 +83,7 @@ train_set = []
 print "eğitim verileri getiriliyor..."
 
 for key in groups:
-    record_count = 80
+    record_count = 160
     group = groups[key]
     cur.execute("SELECT title, content, class_name FROM data WHERE class_name = '%s' LIMIT %d" % (key, record_count))
     print key + " grubundan %d kayıt seçildi" % record_count
@@ -100,9 +101,9 @@ test_set = []
 print "test verileri getiriliyor..."
 
 for key in groups:
-    record_count = 20
+    record_count = 40
     group = groups[key]
-    cur.execute("SELECT title, content, class_name FROM data WHERE class_name = '%s' LIMIT %d OFFSET %d" % (key, record_count, 1000))
+    cur.execute("SELECT title, content, class_name FROM data WHERE class_name = '%s' LIMIT %d OFFSET %d" % (key, record_count, 500))
     print key + " grubundan %d kayıt seçildi" % record_count
 
     for row in cur.fetchall():
@@ -139,13 +140,16 @@ def extractor(doc):
 
 
 # cl = DecisionTreeClassifier(train_set)
+# cl = DecisionTreeClassifier(train_set, feature_extractor=extractor)
 # cl = MaxEntClassifier(train_set)
+# cl = MaxEntClassifier(train_set, feature_extractor=extractor)
 # cl = NaiveBayesClassifier(train_set)
 cl = NaiveBayesClassifier(train_set, feature_extractor=extractor)
+cl.show_informative_features(10)
 print "test ediliyor..."
 
-# Compute accuracy
-print("\nAccuracy: {0}".format(cl.accuracy(test_set)))
+# ağın doğruluğunu hesapla
+print("\nDoğruluk: {0}".format(cl.accuracy(test_set)))
 
 # for test in test_set:
 #     print "gerçek sınıf: " + test[1]
